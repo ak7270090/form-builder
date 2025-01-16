@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Builder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    table {
+      width: 100%;
+      border: 1px solid #ccc;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+    textarea {
+      width: 100%;
+      height: 200px;
+      margin-top: 20px;
+    }
+    input, select, button {
+      margin: 5px 0;
+      padding: 5px;
+    }
+  </style>
+  
+</head>
+<body>
+
+
+
+<div>
+  <label for="name">Input Name </label>
+  <input type="text" id="name">
+  </br>
+
+  <label for="type">Input Type </label>
+  <select id="type">
+    <option value="text">Text</option>
+    <option value="radio">Radio</option>
+    <option value="email">Email</option>
+    <option value="dropdown">Dropdown</option>
+    <option value="checkbox">Checkbox</option>
+    <option value="file">File</option>
+    <option value="number">Number</option>
+  </select>
+</br>
+
+  <label for="required">Required </label>
+  <select id="required">
+    <option value="true">True</option>
+    <option value="false">False</option>
+  </select>
+</br>
+
+  <label for="label">Input Label </label>
+  <input type="text" id="label">
+</br>
+
+  <button onclick="addElement()">Add Element</button>
+</br>
+
+</div>
+
+<h2>Table</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Required</th>
+      <th>Label</th>
+    </tr>
+  </thead>
+  <tbody id="dynamicTable">
+  </tbody>
+</table>
+
+<button onclick="generateHtml()">Generate HTML</button>
+
+<div class="form-container">
+  <h2>Generated HTML</h2>
+  <textarea id="generatedHtml" ></textarea>
+</div>
+
+<script>
+  const dynamicTable = document.getElementById('dynamicTable');
+  const generatedHtml = document.getElementById('generatedHtml');
+
+  function addElement() {
+    const name = document.getElementById('name').value.trim();
+    const type = document.getElementById('type').value;
+    const required = document.getElementById('required').value === 'true';
+    const label = document.getElementById('label').value.trim();
+
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${name}</td>
+      <td>${type}</td>
+      <td>${required}</td>
+      <td>${label}</td>
+    `;
+    dynamicTable.appendChild(row);
+
+    document.getElementById('name').value = '';
+    document.getElementById('label').value = '';
+    document.getElementById('type').value = 'text';
+    document.getElementById('required').value = 'true';
+  }
+
+  function generateHtml() {
+    const rows = dynamicTable.getElementsByTagName('tr');
+    let formHtml = '<form>\n';
+
+    Array.from(rows).forEach(row => {
+      const cells = row.getElementsByTagName('td');
+      const name = cells[0].innerText;
+      const type = cells[1].innerText;
+      const required = cells[2].innerText === 'true';
+      const label = cells[3].innerText;
+
+      formHtml += `  <label for="${name}">${label}</label>\n`;
+
+      if (type === 'dropdown') {
+        formHtml += `  <select name="${name}" id="${name}"${required ? ' required' : ''}>\n`;
+        formHtml += `    <option value="Option 1">Option 1</option>\n`;
+        formHtml += `    <option value="Option 2">Option 2</option>\n`;
+        formHtml += `    <option value="Option 3">Option 3</option>\n`;
+        formHtml += '  </select>\n';
+      } else if (type === 'checkbox' || type === 'radio') {
+        ['Option 1', 'Option 2', 'Option 3'].forEach(option => {
+          formHtml += `  <input type="${type}" name="${name}" value="${option}"${required ? ' required' : ''}> ${option}\n`;
+        });
+      } else {
+        formHtml += `  <input type="${type}" name="${name}" id="${name}"${required ? ' required' : ''}>\n`;
+      }
+
+      formHtml += '  <br>\n';
+    });
+
+    formHtml += '</form>';
+    generatedHtml.value = formHtml;
+  }
+</script>
+
+</body>
+</html>
