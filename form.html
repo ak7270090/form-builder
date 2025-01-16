@@ -85,6 +85,8 @@
 
 <button onclick="generateHtml()">Generate HTML</button>
 
+<button onclick="downloadHtml()">Download HTML</button>
+
 <div class="form-container">
   <h2>Generated HTML</h2>
   <textarea id="generatedHtml" ></textarea>
@@ -148,6 +150,19 @@
     formHtml += '</form>';
     generatedHtml.value = formHtml;
   }
+
+ 
+  function downloadHtml() {
+    const blob = new Blob([generatedHtml.value], { type: "text/html" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "generated_form.html";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+
 </script>
 
 </body>
